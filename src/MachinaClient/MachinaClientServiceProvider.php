@@ -1,0 +1,33 @@
+<?php 
+
+namespace Code16\MachinaClient;
+
+use Illuminate\Support\ServiceProvider;
+use Code16\MachinaClient\Commands\FooCommand;
+
+class MachinaClientServiceProvider extends ServiceProvider {
+
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/config.php', 'machina-client'
+        );
+
+    }
+
+}
