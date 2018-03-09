@@ -1,0 +1,5 @@
+{
+    "packages": {
+        "code16/machina": "../machina"
+    }
+}

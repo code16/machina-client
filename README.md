@@ -1,49 +1,37 @@
-# Laravel 5's Package Boilerplate
+# Machina Client
 
-A custom made Laravel5 package boilerplate made for package development purpose, which contains publish code for :
+"code16/machina-client" is aimed to be used for implementing client to communicate with JSON APIs protected with the Code16/Machina JWT Token authentication guard. It's a simple wrapper around `GuzzleHttp` and takes cares of querying/refreshing JWT token for you. 
 
-- Config
-- View
-- Assets
-- Migrations
-- Seeds
-- Routes
+## Installation
+
+```
+    composer require code16/machina-client
+```
 
 ## Usage
 
-1- Clone this repository into your package development folder.
-
-2- Change src/Package to your package name. Customize the package's composer.json autoload section to reflect the previous change.
-
-3- Customize **Package/PackageServiceProvider** with the correct namespace and the name of your package, and replace the $packageName attribute.
-
 ```php
 
-    protected $packageName = 'yourpackagename';
+    $client = new \Code16\MachinaClient\MachinaClient;
+
+    $client->setBaseUrl("https://example.com/api");
+    $client->setCredentials([
+        "client" => "some-client-key",
+        "secret" => "some-secret-key",
+    ]);
+
+    try {
+        $client->get("/foo");  // ['foo => bar'];
+    }
+    catch(\Code16\MachinaClient\Exceptions\InvalidCredentialsException $e) 
+    {
+        // Incorrect credentials
+    }
 
 ```
 
-4- Add the package in your application's **composer.json** autoload section to make it available in your application. 
+## License
 
-```
+(c) 2018 code16.fr
 
-"psr-4": {
-            "App\\": "app/",
-            "Vendor\\Package\\": "packages/vendor/package/src/Package"
-        }
-
-```
-
-5- Run :
-
-```
-composer dump-autoload
-```
-
-6- Add the newly create package's service provider to your **config/app.php** provider's list.
-
-7- Have fun!
-
-## Package dependencies
-
-Laravel won't autoload the **vendor/** path in your package's development folder. Easiest workaround is to add them in your main application's composer.json.
+MIT
