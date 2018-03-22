@@ -274,11 +274,11 @@ class MachinaClient
      */
     protected function buildUrl(string $uri) : string
     {
-        $uri = starts_with("/", $uri)
+        $uri = starts_with($uri, "/")
             ? susbstr($uri, 1)
             : $uri;
 
-        $baseUrl = ends_with("/", $this->baseUrl) 
+        $baseUrl = ends_with($this->baseUrl, "/") 
             ? $this->baseUrl
             : $this->baseUrl."/";
 
