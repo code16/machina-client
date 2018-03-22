@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Response;
 use Code16\MachinaClient\Exceptions\InvalidCredentialsException;
+use Psr\Log\LoggerInterface;
 
 class MachinaClient
 {
@@ -43,7 +44,14 @@ class MachinaClient
      * 
      * @var array
      */
-    protected $headers = []; 
+    protected $headers = [];
+
+    /**
+     * Optionnal logger
+     * 
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
 
     public function __construct(
         Client $client,
@@ -76,6 +84,16 @@ class MachinaClient
     {
         $this->baseUrl = $baseUrl;
         return $this;
+    }
+
+    /**
+     * Set an optional logger to the client
+     * 
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -159,9 +177,14 @@ class MachinaClient
      */
     protected function sendRequest(string $method, string $uri, array $data = null)
     {
+        $this->logInfo("Sending query : $method:$uri ");
+        if($data) {
+            $this->logDebug("request payload : ".json_encode($data));
+        }
+
         if(! $this->token) {
             $this->token = $this->sendTokenRequest();
-        }   
+        }
 
         $client = $this->getHttpClient();
 
@@ -176,6 +199,9 @@ class MachinaClient
                 ]); 
         }
         catch (RequestException $e) {
+            
+            $this->logError("Error ".$e->getCode().":".$e->getMessage());
+            
             if($e->getCode() == 401) {
                 $this->throwAuthenticationError($e->getMessage());
             }
@@ -189,6 +215,8 @@ class MachinaClient
         $this->parseResponseForRefreshedToken($response);
 
         $payload = $response->getBody()->getContents();
+
+        $this->logDebug("Response was successfull : ".$payload);
 
         return json_decode($payload);
     }
@@ -214,6 +242,8 @@ class MachinaClient
 
         $data = $this->credentials;
 
+        $this->logDebug("Sending token request with credentials : ".json_encode($data));
+
         try {
             $response = $client->request("post", $this->buildUrl("auth/login"), [
                 'form_params' => $data,
@@ -221,6 +251,7 @@ class MachinaClient
         }
         catch (RequestException $e) {
             if($e->getCode() == 401) {
+                $this->logError("Could not complete request : invalid credentials.");
                 throw new InvalidCredentialsException(
                     "Could not authenticate to server with provided credentials"
                 );
@@ -229,6 +260,8 @@ class MachinaClient
         }
 
         $payload = json_decode($response->getBody()->getContents());
+
+        $this->logDebug("Token response : ".json_encode($payload));
 
         return $payload->access_token;
     }
@@ -287,6 +320,45 @@ class MachinaClient
 
         if($authorization) {
             $this->token = substr($authorization[0], 7);
+        }
+    }
+
+    /**
+     * Log message of INFO level
+     * 
+     * @param  mixed $message 
+     * @return void
+     */
+    protected function logInfo($message)
+    {
+        if($this->logger) {
+            $this->logger->info($message);
+        }
+    }
+
+    /**
+     * Log message of DEBUG level
+     * 
+     * @param  mixed $message 
+     * @return void
+     */
+    protected function logDebug($message)
+    {
+        if($this->logger) {
+            $this->logger->debug($message);
+        }
+    }
+
+    /**
+     * Log message of ERROR level
+     * 
+     * @param  mixed $message 
+     * @return void
+     */
+    protected function logError($message)
+    {
+        if($this->logger) {
+            $this->logger->error($message);
         }
     }
 
