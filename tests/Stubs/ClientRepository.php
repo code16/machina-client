@@ -6,7 +6,7 @@ use Code16\Machina\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-    public function find($id)
+    public function findByKey($id)
     {
         return Client::find($id);
     }

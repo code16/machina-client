@@ -48,12 +48,13 @@ class MachinaClientTest extends MachinaClientTestCase
     /** @test */
     function it_throws_an_exception_if_credentials_are_invalid()
     {
-        $this->expectException(\Code16\MachinaClient\Exceptions\InvalidCredentialsException::class);
         $client = $this->buildTestClient( new MockHandler([
             new Response(401, [], json_encode([
                 'error' => "invalid credentials",
             ])),
         ]));
+        $this->expectException(\Code16\MachinaClient\Exceptions\InvalidCredentialsException::class);
+        $this->assertEquals(['foo' => 'bar'], (array) $client->get('/test'));
     }
 
 
