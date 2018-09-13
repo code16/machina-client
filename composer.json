@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-        "illuminate/support": "5.6.*",
+        "illuminate/support": "5.6.*|5.7.*",
         "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "phpunit/phpunit": "7.0.*",
-        "orchestra/testbench": "3.6.*",
+        "orchestra/testbench": "3.6.*|3.7.*",
         "code16/machina": "dev-master"
     },
     "autoload": {

@@ -1,5 +1,5 @@
 {
-    "packages": {
-        "code16/machina": "../machina"
-    }
+    "version": 2,
+    "paths": [
+    ]
 }
