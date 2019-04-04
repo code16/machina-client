@@ -2,21 +2,22 @@
 
 namespace Code16\MachinaClient\Tests;
 
-use Schema;
 use Code16\Machina\MachinaServiceProvider;
 use Code16\MachinaClient\MachinaClientServiceProvider;
-use Orchestra\Testbench\TestCase;
 use Code16\MachinaClient\Tests\Stubs\Client;
 use Code16\MachinaClient\Tests\Stubs\TestClient;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use Illuminate\Support\Facades\Schema;
+use Orchestra\Testbench\TestCase;
 
 abstract class MachInaClientTestCase extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
+
         Schema::create('clients', function($table) {
             $table->increments('id');
             $table->string('secret');
