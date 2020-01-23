@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Response;
 use Code16\MachinaClient\Exceptions\InvalidCredentialsException;
+use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 
 class MachinaClient
@@ -274,11 +275,11 @@ class MachinaClient
      */
     protected function buildUrl(string $uri) : string
     {
-        $uri = starts_with($uri, "/")
+        $uri = Str::startsWith($uri, "/")
             ? substr($uri, 1)
             : $uri;
 
-        $baseUrl = ends_with($this->baseUrl, "/") 
+        $baseUrl = Str::endsWith($this->baseUrl, "/")
             ? $this->baseUrl
             : $this->baseUrl."/";
 
