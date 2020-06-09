@@ -10,6 +10,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase;
 
 abstract class MachInaClientTestCase extends TestCase
@@ -32,7 +33,7 @@ abstract class MachInaClientTestCase extends TestCase
      * @return void
      */
     protected function getEnvironmentSetUp($app)
-    {       
+    {
         $app['config']->set('app.key', str_random(32));
         $app['config']->set('database.default', "sqlite");
         $app['config']->set('database.connections.sqlite', [
@@ -76,7 +77,7 @@ abstract class MachInaClientTestCase extends TestCase
 
     /**
      * Create and return test client
-     * 
+     *
      * @param  string|null $secret
      * @return Client
      */
@@ -84,7 +85,7 @@ abstract class MachInaClientTestCase extends TestCase
     {
         $client = new Client;
         $client->id = 1;
-        $client->secret = str_random(32);
+        $client->secret = Str::random(32);
         $client->save();
         return $client;
     }

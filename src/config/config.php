@@ -1,13 +1,13 @@
-<?php 
+<?php
 
 return [
-    
+
     /*
     |--------------------------------------------------------------------------
-    | Package Configuration Option
+    | authentication endpoint
     |--------------------------------------------------------------------------
-    | Describe what it does. 
+    | used to form url used to fetch a new token
     */
-    //'key' => 'value',
+    'authentication_endpoint' => env("AUTHENTICATION_ENDPOINT", "auth/login"),
 
 ];

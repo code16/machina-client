@@ -11,6 +11,18 @@ use GuzzleHttp\Exception\RequestException;
 class MachinaClientTest extends MachinaClientTestCase
 {
     /** @test */
+    function we_can_build_authentication_endpoint_url()
+    {
+        config(["authentication_endpoint" => "special/auth"]);
+        $client = $this->buildTestClient();
+        $client->setBaseUrl("http://code16.fr/api");
+        $this->assertEquals(
+            "http://code16.fr/api/special/auth",
+            $client->buildUrl(config("authentication_endpoint"))
+        );
+    }
+
+    /** @test */
     function we_can_instantiate_test_client()
     {
         $this->assertInstanceOf(MachinaClient::class, $this->buildTestClient());

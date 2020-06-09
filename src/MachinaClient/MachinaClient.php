@@ -14,49 +14,49 @@ class MachinaClient
 {
     /**
      * Guzzle client instance
-     * 
+     *
      * @var \GuzzleHttp\Client
      */
     protected $client;
 
     /**
      * Credentials used to request JWT Token
-     * 
+     *
      * @var array
      */
     protected $credentials;
 
     /**
      * Store the JWT token
-     * 
+     *
      * @var string
      */
     protected $token;
 
     /**
-     * Base url for API 
-     * 
+     * Base url for API
+     *
      * @var string
      */
     protected $baseUrl;
 
     /**
      * Custom headers
-     * 
+     *
      * @var array
      */
     protected $headers = [];
 
     /**
      * Optionnal logger
-     * 
+     *
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
     public function __construct(
         Client $client,
-        array $credentials = null, 
+        array $credentials = null,
         string $url = null)
     {
         $this->client = $client;
@@ -67,7 +67,7 @@ class MachinaClient
     /**
      * Set credentials to be used on this instance
      *
-     * @param array $credentials 
+     * @param array $credentials
      * @return static
      */
     public function setCredentials(array $credentials)
@@ -78,7 +78,7 @@ class MachinaClient
 
     /**
      * Set base API url that will be used to call endpoints on this instance
-     * 
+     *
      * @param string $baseUrl
      */
     public function setBaseUrl(string $baseUrl)
@@ -89,7 +89,7 @@ class MachinaClient
 
     /**
      * Set an optional logger to the client
-     * 
+     *
      * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
@@ -98,7 +98,7 @@ class MachinaClient
     }
 
     /**
-     * Define custom headers to be used with all request within this instance. 
+     * Define custom headers to be used with all request within this instance.
      *
      * @return static
      */
@@ -110,7 +110,7 @@ class MachinaClient
 
     /**
      * Send a GET request
-     * 
+     *
      * @param  string     $uri
      * @param  array|null $data
      * @return array
@@ -122,7 +122,7 @@ class MachinaClient
 
     /**
      * Send a POST request
-     * 
+     *
      * @param  string     $uri
      * @param  array|null $data
      * @return array
@@ -134,7 +134,7 @@ class MachinaClient
 
     /**
      * Send a PUT request
-     * 
+     *
      * @param  string     $uri
      * @param  array|null $data
      * @return array
@@ -146,7 +146,7 @@ class MachinaClient
 
     /**
      * Send a PATCH request
-     * 
+     *
      * @param  string     $uri
      * @param  array|null $data
      * @return array
@@ -154,11 +154,11 @@ class MachinaClient
     public function patch(string $uri, array $data = null)
     {
         return $this->sendRequest("patch", $uri, $data);
-    }   
+    }
 
     /**
      * Send a DELETE request
-     * 
+     *
      * @param  string     $uri
      * @param  array|null $data
      * @return array
@@ -170,9 +170,9 @@ class MachinaClient
 
     /**
      * Send Guzzle request, and catch any authentication error
-     * 
+     *
      * @param  string $method
-     * @param  string $url 
+     * @param  string $url
      * @param  array  $data
      * @return array
      */
@@ -190,19 +190,19 @@ class MachinaClient
         $client = $this->getHttpClient();
 
         try {
-            $response = $data ? 
+            $response = $data ?
                 $client->request($method, $this->buildUrl($uri), [
                     'form_params' => $data,
                     'headers' => $this->buildHeaders(),
-                ]) : 
+                ]) :
                 $client->request($method, $this->buildUrl($uri), [
                     'headers' => $this->buildHeaders(),
-                ]); 
+                ]);
         }
         catch (RequestException $e) {
-            
+
             $this->logError("Error ".$e->getCode().":".$e->getMessage());
-            
+
             if($e->getCode() == 401) {
                 $this->throwAuthenticationError($e->getMessage());
             }
@@ -224,7 +224,7 @@ class MachinaClient
 
     /**
      * Throw an authentication exception
-     * 
+     *
      * @throws InvalidCredentialException
      */
     protected function throwAuthenticationError(string $message)
@@ -234,7 +234,7 @@ class MachinaClient
 
     /**
      * Request a JWT using provided credentials
-     * 
+     *
      * @return string
      */
     protected function sendTokenRequest()
@@ -246,7 +246,7 @@ class MachinaClient
         $this->logDebug("Sending token request with credentials : ".json_encode($data));
 
         try {
-            $response = $client->request("post", $this->buildUrl("auth/login"), [
+            $response = $client->request("post", $this->buildUrl(config("authentication_endpoint")), [
                 'form_params' => $data,
             ]);
         }
@@ -269,11 +269,11 @@ class MachinaClient
 
     /**
      * Build an URL for the request
-     * 
+     *
      * @param  string $uri
      * @return string
      */
-    protected function buildUrl(string $uri) : string
+    public function buildUrl(string $uri) : string
     {
         $uri = Str::startsWith($uri, "/")
             ? substr($uri, 1)
@@ -288,20 +288,20 @@ class MachinaClient
 
     /**
      * Build the headers for the request
-     * 
+     *
      * @return array
      */
     protected function buildHeaders() : array
     {
         return array_merge(
-            $this->headers, 
+            $this->headers,
             $this->buildAuthorizationHeader()
         );
     }
 
     /**
      * Return authorization header
-     * 
+     *
      * @return array
      */
     protected function buildAuthorizationHeader() : array
@@ -311,7 +311,7 @@ class MachinaClient
 
     /**
      * Parse a response for a refresh token
-     * 
+     *
      * @param  $response
      * @return string|null
      */
@@ -326,8 +326,8 @@ class MachinaClient
 
     /**
      * Log message of INFO level
-     * 
-     * @param  mixed $message 
+     *
+     * @param  mixed $message
      * @return void
      */
     protected function logInfo($message)
@@ -339,8 +339,8 @@ class MachinaClient
 
     /**
      * Log message of DEBUG level
-     * 
-     * @param  mixed $message 
+     *
+     * @param  mixed $message
      * @return void
      */
     protected function logDebug($message)
@@ -352,8 +352,8 @@ class MachinaClient
 
     /**
      * Log message of ERROR level
-     * 
-     * @param  mixed $message 
+     *
+     * @param  mixed $message
      * @return void
      */
     protected function logError($message)
@@ -365,7 +365,7 @@ class MachinaClient
 
     /**
      * Return instance of Guzzle client
-     * 
+     *
      * @return GuzzleHttp\Client
      */
     protected function getHttpClient() : Client
