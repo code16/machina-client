@@ -8,6 +8,6 @@ return [
     |--------------------------------------------------------------------------
     | used to form url used to fetch a new token
     */
-    'authentication_endpoint' => env("AUTHENTICATION_ENDPOINT", "auth/login"),
+    'authentication_endpoint' => env("MACHINA_CLIENT_AUTHENTICATION_ENDPOINT", "auth/login"),
 
 ];
