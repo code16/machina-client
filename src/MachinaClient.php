@@ -237,7 +237,7 @@ class MachinaClient
      *
      * @return string
      */
-    protected function sendTokenRequest()
+    public function sendTokenRequest()
     {
         $client = $this->getHttpClient();
 
@@ -264,7 +264,7 @@ class MachinaClient
 
         $this->logDebug("Token response : ".json_encode($payload));
 
-        return $payload->access_token;
+        return $payload->{config("machina-client.token_result_key")};
     }
 
     /**

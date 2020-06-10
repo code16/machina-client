@@ -13,12 +13,11 @@ class MachinaClientTest extends MachinaClientTestCase
     /** @test */
     function we_can_build_authentication_endpoint_url()
     {
-        config(["authentication_endpoint" => "special/auth"]);
         $client = $this->buildTestClient();
         $client->setBaseUrl("http://code16.fr/api");
         $this->assertEquals(
             "http://code16.fr/api/special/auth",
-            $client->buildUrl(config("authentication_endpoint"))
+            $client->buildUrl("special/auth")
         );
     }
 
@@ -26,6 +25,20 @@ class MachinaClientTest extends MachinaClientTestCase
     function we_can_instantiate_test_client()
     {
         $this->assertInstanceOf(MachinaClient::class, $this->buildTestClient());
+    }
+
+    /** @test */
+    function we_can_use_a_custom_token_result_key()
+    {
+        config(["machina-client.token_result_key" => "toto_token"]);
+        $client = $this->buildTestClient( new MockHandler([
+            new Response(200, [], json_encode([
+                'toto_token' => "tititata",
+                'token_type' => 'bearer',
+                'expires_in' => 3600,
+            ]))
+        ]));
+        $this->assertEquals("tititata", $client->sendTokenRequest());
     }
 
     /** @test */
