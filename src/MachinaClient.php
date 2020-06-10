@@ -246,7 +246,7 @@ class MachinaClient
         $this->logDebug("Sending token request with credentials : ".json_encode($data));
 
         try {
-            $response = $client->request("post", $this->buildUrl(config("authentication_endpoint")), [
+            $response = $client->request("post", $this->buildUrl(config("machina-client.authentication_endpoint")), [
                 'form_params' => $data,
             ]);
         }

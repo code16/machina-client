@@ -20,7 +20,7 @@
     },
     "autoload": {
        "psr-4": {
-            "Code16\\MachinaClient\\": "src/MachinaClient"
+            "Code16\\MachinaClient\\": "src/"
         }
     },
     "autoload-dev": {

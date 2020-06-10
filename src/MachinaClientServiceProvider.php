@@ -1,9 +1,8 @@
-<?php 
+<?php
 
 namespace Code16\MachinaClient;
 
 use Illuminate\Support\ServiceProvider;
-use Code16\MachinaClient\Commands\FooCommand;
 
 class MachinaClientServiceProvider extends ServiceProvider {
 
@@ -25,7 +24,7 @@ class MachinaClientServiceProvider extends ServiceProvider {
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/config.php', 'machina-client'
+            __DIR__ . '/../config/config.php', 'machina-client'
         );
 
     }
