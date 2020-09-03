@@ -2,11 +2,9 @@
 
 namespace Code16\MachinaClient;
 
+use Code16\MachinaClient\Exceptions\InvalidCredentialsException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Response;
-use Code16\MachinaClient\Exceptions\InvalidCredentialsException;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 
@@ -53,11 +51,13 @@ class MachinaClient
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+    
+    /**
+     * @var string
+     */
+    private $bodyName = "form_params";
 
-    public function __construct(
-        Client $client,
-        array $credentials = null,
-        string $url = null)
+    public function __construct(Client $client, array $credentials = null, string $url = null) 
     {
         $this->client = $client;
         $this->credentials = $credentials;
@@ -95,6 +95,7 @@ class MachinaClient
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        return $this;
     }
 
     /**
@@ -105,6 +106,18 @@ class MachinaClient
     public function withHeaders(array $headers)
     {
         $this->headers = $headers;
+        return $this;
+    }
+
+    public function setBodyAsJson() 
+    {
+        $this->bodyName = "json";
+        return $this;
+    }
+
+    public function setBodyAsFormParams()
+    {
+        $this->bodyName = "form_params";
         return $this;
     }
 
@@ -171,10 +184,12 @@ class MachinaClient
     /**
      * Send Guzzle request, and catch any authentication error
      *
-     * @param  string $method
-     * @param  string $url
-     * @param  array  $data
+     * @param string $method
+     * @param string $uri
+     * @param array $data
      * @return array
+     * @throws InvalidCredentialsException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function sendRequest(string $method, string $uri, array $data = null)
     {
@@ -190,23 +205,23 @@ class MachinaClient
         $client = $this->getHttpClient();
 
         try {
-            $response = $data ?
-                $client->request($method, $this->buildUrl($uri), [
-                    'form_params' => $data,
+            $response = $data 
+                ? $client->request($method, $this->buildUrl($uri), [
+                    $this->bodyName => $data,
                     'headers' => $this->buildHeaders(),
-                ]) :
-                $client->request($method, $this->buildUrl($uri), [
+                ]) 
+                : $client->request($method, $this->buildUrl($uri), [
                     'headers' => $this->buildHeaders(),
                 ]);
-        }
-        catch (RequestException $e) {
-
+            
+        } catch (RequestException $e) {
             $this->logError("Error ".$e->getCode().":".$e->getMessage());
 
             if($e->getCode() == 401) {
                 $this->throwAuthenticationError($e->getMessage());
+            } else {
+                throw $e;
             }
-            else throw $e;
         }
 
         if($response->getStatusCode() == 401) {

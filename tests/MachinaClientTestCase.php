@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase;
 
-abstract class MachInaClientTestCase extends TestCase
+abstract class MachinaClientTestCase extends TestCase
 {
     public function setUp(): void
     {
@@ -34,7 +34,7 @@ abstract class MachInaClientTestCase extends TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('app.key', str_random(32));
+        $app['config']->set('app.key', Str::random(32));
         $app['config']->set('database.default', "sqlite");
         $app['config']->set('database.connections.sqlite', [
             'driver'   => 'sqlite',
