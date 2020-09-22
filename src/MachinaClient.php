@@ -51,13 +51,13 @@ class MachinaClient
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
-    
+
     /**
      * @var string
      */
     private $bodyName = "form_params";
 
-    public function __construct(Client $client, array $credentials = null, string $url = null) 
+    public function __construct(Client $client, array $credentials = null, string $url = null)
     {
         $this->client = $client;
         $this->credentials = $credentials;
@@ -109,7 +109,14 @@ class MachinaClient
         return $this;
     }
 
-    public function setBodyAsJson() 
+    public function setBodyAsQuery()
+    {
+        //http://docs.guzzlephp.org/en/stable/request-options.html#query
+        $this->bodyName = "query";
+        return $this;
+    }
+
+    public function setBodyAsJson()
     {
         $this->bodyName = "json";
         return $this;
@@ -205,15 +212,15 @@ class MachinaClient
         $client = $this->getHttpClient();
 
         try {
-            $response = $data 
+            $response = $data
                 ? $client->request($method, $this->buildUrl($uri), [
                     $this->bodyName => $data,
                     'headers' => $this->buildHeaders(),
-                ]) 
+                ])
                 : $client->request($method, $this->buildUrl($uri), [
                     'headers' => $this->buildHeaders(),
                 ]);
-            
+
         } catch (RequestException $e) {
             $this->logError("Error ".$e->getCode().":".$e->getMessage());
 
