@@ -222,7 +222,7 @@ class MachinaClient
                 ]);
 
         } catch (RequestException $e) {
-            $this->logError("Error ".$e->getCode().":".$e->getMessage());
+            $this->logDebug("Error ".$e->getCode().":".$e->getMessage());
 
             if($e->getCode() == 401) {
                 $this->throwAuthenticationError($e->getMessage());
