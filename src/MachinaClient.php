@@ -274,7 +274,7 @@ class MachinaClient
         }
         catch (RequestException $e) {
             if($e->getCode() == 401) {
-                $this->logError("Could not complete request : invalid credentials.");
+                $this->logInfo("Could not complete request : invalid credentials.");
                 throw new InvalidCredentialsException(
                     "Could not authenticate to server with provided credentials"
                 );
@@ -369,19 +369,6 @@ class MachinaClient
     {
         if($this->logger) {
             $this->logger->debug($message);
-        }
-    }
-
-    /**
-     * Log message of ERROR level
-     *
-     * @param  mixed $message
-     * @return void
-     */
-    protected function logError($message)
-    {
-        if($this->logger) {
-            $this->logger->error($message);
         }
     }
 
