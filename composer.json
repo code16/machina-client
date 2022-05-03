@@ -1,22 +1,15 @@
 {
     "name": "code16/machina-client",
     "description": "Client package for code16/machina",
-    "keywords": ["jwt", "api", "auth", "laravel"],
-    "homepage": "https://github.com/machina-client",
-    "authors": [
-        {
-            "name": "Rémi Collin",
-            "email": "remi@code16.fr"
-        }
-    ],
     "require": {
-        "illuminate/support": "^6.0|^7.0|^8.0",
+        "php": "^8.1",
+        "illuminate/support": "^9.0",
         "guzzlehttp/guzzle": "^6.3|^7.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "7.0.*|7.5.*|8.5.*|9.0.*",
-        "orchestra/testbench": "4.*|5.*|6.*",
-        "code16/machina": "dev-master"
+        "phpunit/phpunit": "8.5.*|9.5.*",
+        "orchestra/testbench": "6.*|7.*",
+        "code16/machina": "^1.0"
     },
     "autoload": {
        "psr-4": {
