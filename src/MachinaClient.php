@@ -5,6 +5,7 @@ namespace Code16\MachinaClient;
 use Code16\MachinaClient\Exceptions\InvalidCredentialsException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 
@@ -221,7 +222,7 @@ class MachinaClient
                     'headers' => $this->buildHeaders(),
                 ]);
 
-        } catch (RequestException $e) {
+        } catch (BadResponseException | RequestException $e) {
             $this->logDebug("Error ".$e->getCode().":".$e->getMessage());
 
             if($e->getCode() == 401) {
