@@ -1,16 +1,17 @@
 <?php
 
-namespace Code16\MachinaClients\Tests\Unit;
+namespace Code16\MachinaClient\Tests\Unit;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use Code16\MachinaClient\MachinaClient;
 use Code16\MachinaClient\Tests\MachinaClientTestCase;
 use GuzzleHttp\Exception\RequestException;
+use PHPUnit\Framework\Attributes\Test;
 
 class MachinaClientTest extends MachinaClientTestCase
 {
-    /** @test */
+    #[Test]
     function we_can_build_authentication_endpoint_url()
     {
         $client = $this->buildTestClient();
@@ -21,13 +22,13 @@ class MachinaClientTest extends MachinaClientTestCase
         );
     }
 
-    /** @test */
+    #[Test]
     function we_can_instantiate_test_client()
     {
         $this->assertInstanceOf(MachinaClient::class, $this->buildTestClient());
     }
 
-    /** @test */
+    #[Test]
     function we_can_use_a_custom_token_result_key()
     {
         config(["machina-client.token_result_key" => "toto_token"]);
@@ -41,7 +42,7 @@ class MachinaClientTest extends MachinaClientTestCase
         $this->assertEquals("tititata", $client->sendTokenRequest());
     }
 
-    /** @test */
+    #[Test]
     function we_can_do_a_request()
     {
         $client = $this->buildTestClient( new MockHandler([
@@ -55,7 +56,7 @@ class MachinaClientTest extends MachinaClientTestCase
         $this->assertEquals(['foo' => 'bar'], (array) $client->get('/test'));
     }
 
-    /** @test */
+    #[Test]
     function client_used_refreshed_token_if_a_token_is_part_of_the_response()
     {
         $client = $this->buildTestClient( new MockHandler([
@@ -70,7 +71,7 @@ class MachinaClientTest extends MachinaClientTestCase
         $this->assertEquals("vvvvv", $client->getToken());
     }
 
-    /** @test */
+    #[Test]
     function it_throws_an_exception_if_credentials_are_invalid()
     {
         $client = $this->buildTestClient( new MockHandler([
